@@ -1,0 +1,32 @@
+version: '3.9'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: gestion_personnes_db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: gestion_personnes
+    ports:
+      - "3307:3306"  # Port externe Windows -> Port interne conteneur
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  app:
+    image: gestion-personnes:1.0
+    container_name: gestion_personnes_app
+    restart: always
+    ports:
+      - "8090:8080"   # Port externe Docker -> Port interne Spring Boot
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/gestion_personnes?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: password
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_JPA_SHOW_SQL: "true"
+    depends_on:
+      - mysql
+
+volumes:
+  mysql_data:

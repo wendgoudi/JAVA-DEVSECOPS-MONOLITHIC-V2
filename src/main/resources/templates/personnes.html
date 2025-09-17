@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestion des personnes</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f9f9f9; padding: 20px; }
+        h2 { color: #333; }
+        form {
+            margin-bottom: 30px;
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            display: flex; gap: 10px; flex-wrap: wrap;
+        }
+        input[type="text"], input[type="email"], input[type="date"] { padding: 10px; border-radius: 6px; border: 1px solid #ccc; flex: 1; }
+        button { padding: 12px 20px; background: #28a745; color: white; border: none; border-radius: 6px; cursor: pointer; }
+        button:hover { background: #218838; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        th, td { padding: 12px 15px; border-bottom: 1px solid #ddd; text-align: left; }
+        th { background: #007bff; color: white; }
+        tr:hover { background-color: #f1f1f1; }
+    </style>
+</head>
+<body>
+<h2>Gestion des personnes</h2>
+
+<form th:action="@{/ajouter}" method="post">
+    <input type="text" name="nom" placeholder="Nom" required/>
+    <input type="text" name="prenom" placeholder="Prénom" required/>
+    <input type="email" name="email" placeholder="Email" required/>
+    <input type="text" name="departement" placeholder="Département" required/>
+    <input type="text" name="fonction" placeholder="Fonction" required/>
+    <input type="date" name="date" required/>
+    <button type="submit">Ajouter</button>
+</form>
+
+<h3>Liste des personnes</h3>
+<table>
+    <tr>
+        <th>ID</th>
+        <th>Nom</th>
+        <th>Prénom</th>
+        <th>Email</th>
+        <th>Département</th>
+        <th>Fonction</th>
+        <th>Date</th>
+    </tr>
+    <tr th:each="p : ${personnes}">
+        <td th:text="${p.id}"></td>
+        <td th:text="${p.nom}"></td>
+        <td th:text="${p.prenom}"></td>
+        <td th:text="${p.email}"></td>
+        <td th:text="${p.departement}"></td>
+        <td th:text="${p.fonction}"></td>
+        <td th:text="${p.dateEmbauche}"></td>
+    </tr>
+</table>
+</body>
+</html>
