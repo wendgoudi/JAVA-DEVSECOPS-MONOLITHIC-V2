@@ -16,7 +16,7 @@ pipeline {
       post {
         always {
             junit allowEmptyResults: true, testResults: 'target/surefire-reports/*.xml'
-            jacoco execPattern: 'target/jacoco.exec', skipCopy: true
+            jacoco execPattern: 'target/jacoco.exec'
         }
       }
     }
