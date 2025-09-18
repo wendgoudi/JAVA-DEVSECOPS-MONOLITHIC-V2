@@ -8,5 +8,11 @@ pipeline {
         archive 'target/*.jar' //Pour qu'on puisse télécharger ultérieurement
       }
     }
+
+    stage('Unit Tests') {
+      steps {
+        sh "mvn test"
+      }
+    }
   }
 }
