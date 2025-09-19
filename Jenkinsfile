@@ -20,5 +20,15 @@ pipeline {
         }
       }
     }
+  //gestion-personnes:1.0 .
+    stage('Docker Build and Push') {
+      steps {
+        withDockerRegistry([credentialsId: "docker-hub", url: ""]) {
+          sh 'printenv'
+          sh 'docker build -t wendgoudi/gestion-personnes:latest .'
+          sh 'docker push wendgoudi/gestion-personnes:latest'
+        }
+      }
+    }
   }
 }
