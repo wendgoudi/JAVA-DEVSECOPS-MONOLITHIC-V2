@@ -36,6 +36,7 @@ pipeline {
           withKubeConfig([credentialsId: 'kubeconfig']) {
               // Mise à jour dynamique de l'image dans le manifest
               sh """
+                sudo sed -i 's#/home/wendgoudi/.minikube#/var/lib/jenkins/.minikube#g' /var/lib/jenkins/.kube/config
                 sed -i 's#image: gestion-personnes:1.0#image: wendgoudi/gestion-personnes:latest#g' k8s_deployment_service.yaml
                 kubectl apply -f k8s_deployment_service.yaml
                 kubectl rollout status deployment/gestion-personnes-deployment
