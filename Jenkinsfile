@@ -46,12 +46,6 @@ pipeline {
       }
     }
 
-  post {
-      always {
-          //Archive le rapport Talisman dans Jenkins
-          archiveArtifacts artifacts: 'talisman-report.txt', allowEmptyArchive: true
-      }
-  }
 /*
   //gestion-personnes:1.0 .
     stage('Docker Build and Push') {
@@ -79,5 +73,12 @@ pipeline {
         }
       }
 */
+  }
+
+  post {
+    always {
+        //Archive le rapport Talisman dans Jenkins
+        archiveArtifacts artifacts: 'talisman-report.txt', allowEmptyArchive: true
+    }
   }
 }
