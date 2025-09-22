@@ -2,6 +2,12 @@ pipeline {
   agent any
 
   stages {
+
+    stage('Check Talisman') {
+        steps {
+            sh 'talisman --version || echo "Talisman non trouvé"'
+        }
+    }
     
     stage('Repository recovery') {
         steps {
