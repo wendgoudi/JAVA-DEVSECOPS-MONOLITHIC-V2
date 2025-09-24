@@ -19,9 +19,10 @@ pipeline {
       steps {
           script {
               sh '''
-                  echo "Lancement du scan Talisman..."
-                  talisman --scanWithHtml > talisman-report.txt || true
-                  echo "Scan terminé. Rapport généré : talisman-report.txt"
+                echo "Lancement du scan Talisman..."
+                # Génère un rapport JSON lisible par l'outil HTML
+                talisman --scan > talisman-report.json || true
+                echo "Scan terminé. Rapport généré : talisman-report.json"
               '''
           }
       }
@@ -78,7 +79,7 @@ pipeline {
   post {
     always {
         //Archive le rapport Talisman dans Jenkins
-        archiveArtifacts artifacts: 'talisman-report.txt', allowEmptyArchive: true
+        archiveArtifacts artifacts: 'talisman-report.json', fingerprint: true
     }
   }
 }
