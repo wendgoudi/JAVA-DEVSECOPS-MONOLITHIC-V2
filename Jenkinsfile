@@ -47,7 +47,7 @@ pipeline {
       }
     }
 
-/*
+
   //gestion-personnes:1.0 .
     stage('Docker Build and Push') {
       steps {
@@ -73,7 +73,7 @@ pipeline {
             }
         }
       }
-*/
+
   }
 
   post {
