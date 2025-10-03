@@ -27,22 +27,25 @@ pipeline {
           }
       }
     }
-*/ 
+  */
     stage('git version') {
         steps {
             sh "git version"
         }
     }
+
     stage('maven version') {
         steps {
             sh "mvn -v"
         }
     }
+
     stage('docker version') {
         steps {
             sh "docker -v"
         }
     }
+    
     stage('kubernetes version') {
         steps {
             sh " kubectl version --client"
@@ -96,11 +99,12 @@ pipeline {
       }
 
   }
-*/
+
   post {
     always {
         //Archive le rapport Talisman dans Jenkins
         archiveArtifacts artifacts: 'talisman-report.json', fingerprint: true
     }
+*/
   }
 }
