@@ -33,7 +33,7 @@ pipeline {
         archive 'target/*.jar' //Pour qu'on puisse télécharger ultérieurement
       }
     }
-    
+/*   
     stage('repository recovery') {
         steps {
             git branch: 'main', url: 'https://github.com/wendgoudi/JAVA-DEVSECOPS-MONOLITHIC-V2.git'
@@ -62,9 +62,10 @@ pipeline {
           }
       }
     }
- 
+
+*/
   //gestion-personnes:1.0 .
-    stage('docker build and push') {
+    stage('Docker Build and Push') {
       steps {
         withDockerRegistry([credentialsId: "docker-hub", url: ""]) {
           sh 'printenv'
@@ -73,8 +74,8 @@ pipeline {
         }
       }
     }
-
 /*
+
     stage('Kubernetes Deployment') {
         steps {
             withKubeConfig([credentialsId: 'kubeconfig']) {
