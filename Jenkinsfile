@@ -75,19 +75,22 @@ pipeline {
       }
     }
 
-    stage('kubernetes deployment') {
+    stage('Kubernetes Deployment') {
         environment {
-            MINIKUBE_HOME = '/var/lib/jenkins'
+            // Pointe vers le kubeconfig de Jenkins
+            KUBECONFIG = '/var/lib/jenkins/.kube/config'
         }
         steps {
-            sh """
-              sed -i 's#image: gestion-personnes:1.0#image: wendgoudi/gestion-personnes:latest#g' k8s_deployment_service.yaml
-              minikube kubectl -- apply -f k8s_deployment_service.yaml
-              minikube kubectl -- rollout status deployment/gestion-personnes-deployment
-            """
+            script {
+                // Mise à jour de l'image dans le manifest
+                sh """
+                    sed -i 's#image: gestion-personnes:1.0#image: wendgoudi/gestion-personnes:latest#g' k8s_deployment_service.yaml
+                    kubectl apply -f k8s_deployment_service.yaml
+                    kubectl rollout status deployment/gestion-personnes-deployment
+                """
+            }
         }
     }
-
 
 /*
 
