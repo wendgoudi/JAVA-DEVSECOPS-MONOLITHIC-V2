@@ -78,26 +78,16 @@ pipeline {
 
     stage('kubernetes deployment') {
         steps {
-            script {
-                // Préparer le kubeconfig pour Jenkins
-                sh """
-                    sudo mkdir -p /var/lib/jenkins/.kube
-                    minikube kubectl -- config view --raw | sudo tee /var/lib/jenkins/.kube/config > /dev/null
-                    sudo chown -R jenkins:jenkins /var/lib/jenkins/.kube
-                """
-
-                // Appliquer le manifest Kubernetes
-                sh """
-                    # Mise à jour dynamique de l'image si nécessaire
-                    sed -i 's#image: gestion-personnes:1.0#image: wendgoudi/gestion-personnes:latest#g' k8s_deployment_service.yaml
-
-                    # Déploiement
-                    kubectl --kubeconfig=/var/lib/jenkins/.kube/config apply -f k8s_deployment_service.yaml
-
-                    # Vérifier que le rollout est ok
-                    kubectl --kubeconfig=/var/lib/jenkins/.kube/config rollout status deployment/gestion-personnes-deployment
-                """
-            }
+            sh """
+              # Mise à jour de l'image dans le manifest
+              sed -i 's#image: gestion-personnes:1.0#image: wendgoudi/gestion-personnes:latest#g' k8s_deployment_service.yaml
+              
+              # Déploiement avec minikube
+              minikube kubectl -- apply -f k8s_deployment_service.yaml
+              
+              # Vérification du rollout
+              minikube kubectl -- rollout status deployment/gestion-personnes-deployment
+            """
         }
     }
 
