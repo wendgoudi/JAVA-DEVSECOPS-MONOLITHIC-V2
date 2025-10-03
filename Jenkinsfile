@@ -77,15 +77,16 @@ pipeline {
 
     stage('Kubernetes Deployment') {
         steps {
-            withKubeConfig([credentialsId: 'kubeconfig']) {
-                sh """
-                  sed -i 's#image: gestion-personnes:1.0#image: wendgoudi/gestion-personnes:latest#g' k8s_deployment_service.yaml
-                  kubectl apply -f k8s_deployment_service.yaml
-                  kubectl rollout status deployment/gestion-personnes-deployment
-                """
-            }
+            sh """
+              sed -i 's#image: gestion-personnes:1.0#image: wendgoudi/gestion-personnes:latest#g' k8s_deployment_service.yaml
+              
+              # Déploiement via minikube directement
+              minikube kubectl -- apply -f k8s_deployment_service.yaml
+              minikube kubectl -- rollout status deployment/gestion-personnes-deployment
+            """
         }
     }
+
 
 /*
 
