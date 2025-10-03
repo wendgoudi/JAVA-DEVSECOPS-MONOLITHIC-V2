@@ -62,20 +62,7 @@ pipeline {
           }
       }
     }
-/*
-    stage('Unit Tests') {
-      steps {
-        sh "mvn test"
-      }
-      post {
-        always {
-            junit allowEmptyResults: true, testResults: 'target/surefire-reports/*.xml'
-            jacoco execPattern: 'target/jacoco.exec'
-        }
-      }
-    }
-
-
+ 
   //gestion-personnes:1.0 .
     stage('Docker Build and Push') {
       steps {
@@ -87,7 +74,7 @@ pipeline {
       }
     }
 
-
+/*
     stage('Kubernetes Deployment') {
         steps {
             withKubeConfig([credentialsId: 'kubeconfig']) {
