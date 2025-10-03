@@ -75,12 +75,13 @@ pipeline {
       }
     }
 
-    stage('Kubernetes Deployment') {
+    stage('kubernetes deployment') {
+        environment {
+            MINIKUBE_HOME = '/var/lib/jenkins'
+        }
         steps {
             sh """
               sed -i 's#image: gestion-personnes:1.0#image: wendgoudi/gestion-personnes:latest#g' k8s_deployment_service.yaml
-              
-              # Déploiement via minikube directement
               minikube kubectl -- apply -f k8s_deployment_service.yaml
               minikube kubectl -- rollout status deployment/gestion-personnes-deployment
             """
