@@ -3,31 +3,6 @@ pipeline {
 
   stages {
 /*
-    stage('Check Talisman') {
-        steps {
-            sh 'talisman --version || echo "Talisman non trouvé"'
-        }
-    }
-    
-    stage('Repository recovery') {
-        steps {
-            git branch: 'main', url: 'https://github.com/wendgoudi/JAVA-DEVSECOPS-MONOLITHIC-V2.git'
-        }
-    } 
-  
-    stage('Talisman Security Scan') {
-      steps {
-          script {
-              sh '''
-                echo "Lancement du scan Talisman..."
-                # Génère un rapport JSON lisible par l'outil HTML
-                talisman --scan > talisman-report.json || true
-                echo "Scan terminé. Rapport généré : talisman-report.json"
-              '''
-          }
-      }
-    }
-  */
     stage('git version') {
         steps {
             sh "git version"
@@ -39,13 +14,13 @@ pipeline {
             sh "mvn -v"
         }
     }
-
+  */
     stage('docker version') {
         steps {
             sh "docker -v"
         }
     }
-    
+
     stage('kubernetes version') {
         steps {
             sh " kubectl version --client"
@@ -56,6 +31,35 @@ pipeline {
       steps {
         sh "mvn clean package -DskipTests=true"
         archive 'target/*.jar' //Pour qu'on puisse télécharger ultérieurement
+      }
+    }
+    
+    stage('repository recovery') {
+        steps {
+            git branch: 'main', url: 'https://github.com/wendgoudi/JAVA-DEVSECOPS-MONOLITHIC-V2.git'
+        }
+    } 
+  
+    stage('trufflehog scan') {
+      steps {
+          script {
+              sh '''
+                docker run --rm -v $WORKSPACE:/src trufflesecurity/trufflehog:latest \
+                filesystem /src --json > trufflehog-report.json || true
+              '''
+          }
+      }
+      post {
+          always {
+              // Archive le rapport dans Jenkins
+              archiveArtifacts artifacts: 'trufflehog-report.json', fingerprint: true
+          }
+          success {
+              echo "Scan terminé. Rapport archivé dans Jenkins."
+          }
+          failure {
+              echo "Des secrets ont peut-être été détectés."
+          }
       }
     }
 /*
@@ -99,12 +103,6 @@ pipeline {
       }
 
   }
-
-  post {
-    always {
-        //Archive le rapport Talisman dans Jenkins
-        archiveArtifacts artifacts: 'talisman-report.json', fingerprint: true
-    }
 */
   }
 }
