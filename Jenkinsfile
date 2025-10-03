@@ -75,19 +75,15 @@ pipeline {
       }
     }
 
-
-    stage('kubernetes deployment') {
+    stage('Kubernetes Deployment') {
         steps {
-            sh """
-              # Mise à jour de l'image dans le manifest
-              sed -i 's#image: gestion-personnes:1.0#image: wendgoudi/gestion-personnes:latest#g' k8s_deployment_service.yaml
-              
-              # Déploiement avec minikube
-              minikube kubectl -- apply -f k8s_deployment_service.yaml
-              
-              # Vérification du rollout
-              minikube kubectl -- rollout status deployment/gestion-personnes-deployment
-            """
+            withKubeConfig([credentialsId: 'kubeconfig']) {
+                sh """
+                  sed -i 's#image: gestion-personnes:1.0#image: wendgoudi/gestion-personnes:latest#g' k8s_deployment_service.yaml
+                  kubectl apply -f k8s_deployment_service.yaml
+                  kubectl rollout status deployment/gestion-personnes-deployment
+                """
+            }
         }
     }
 
