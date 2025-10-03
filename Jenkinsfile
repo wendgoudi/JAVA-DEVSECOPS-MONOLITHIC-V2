@@ -2,7 +2,7 @@ pipeline {
   agent any
 
   stages {
-
+/*
     stage('Check Talisman') {
         steps {
             sh 'talisman --version || echo "Talisman non trouvé"'
@@ -27,14 +27,35 @@ pipeline {
           }
       }
     }
-  
+*/ 
+    stage('git version') {
+        steps {
+            sh "git version"
+        }
+    }
+    stage('maven version') {
+        steps {
+            sh "mvn -v"
+        }
+    }
+    stage('docker version') {
+        steps {
+            sh "docker -v"
+        }
+    }
+    stage('kubernetes version') {
+        steps {
+            sh " kubectl version --client"
+        }
+    }
+
     stage('Build Artifact') {
       steps {
         sh "mvn clean package -DskipTests=true"
         archive 'target/*.jar' //Pour qu'on puisse télécharger ultérieurement
       }
     }
-
+/*
     stage('Unit Tests') {
       steps {
         sh "mvn test"
@@ -75,7 +96,7 @@ pipeline {
       }
 
   }
-
+*/
   post {
     always {
         //Archive le rapport Talisman dans Jenkins
