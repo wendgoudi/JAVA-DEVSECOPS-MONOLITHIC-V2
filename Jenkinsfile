@@ -62,9 +62,21 @@ pipeline {
           }
       }
     }
-
 */
-  //gestion-personnes:1.0 .
+ 
+    node {
+    stage('SCM') {
+        checkout scm
+    }
+    stage('SonarQube Analysis') {
+        def mvn = tool 'Default Maven';
+        withSonarQubeEnv() {
+        sh "${mvn}/bin/mvn clean verify sonar:sonar -Dsonar.projectKey=gestion-des-personnes -Dsonar.projectName='gestion-des-personnes'"
+        }
+      }
+    }
+
+/*
     stage('docker build and push') {
       steps {
         withDockerRegistry([credentialsId: "docker-hub", url: ""]) {
@@ -91,8 +103,6 @@ pipeline {
             }
         }
     }
-
-/*
 
     stage('Kubernetes Deployment') {
         steps {
