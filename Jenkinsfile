@@ -73,6 +73,15 @@ pipeline {
             }
         }
     }
+
+    stage('sonarque quality gate') {
+        steps {
+            timeout(time: 3, unit: 'MINUTES') {
+                waitForQualityGate abortPipeline: true
+            }
+        }
+    }
+   
 /*
     stage('docker build and push') {
       steps {
