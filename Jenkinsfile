@@ -63,14 +63,16 @@ pipeline {
       }
     }
 */
- 
-    stage('SonarQube Analysis') {
-        def mvn = tool 'Default Maven';
-        withSonarQubeEnv() {
-        sh "${mvn}/bin/mvn clean verify sonar:sonar -Dsonar.projectKey=gestion-des-personnes -Dsonar.projectName='gestion-des-personnes'"
+    stage('sast-sonarqube-analysis') {
+        steps {
+            script {
+                def mvn = tool 'Default Maven'
+                withSonarQubeEnv('SonarQube') {
+                    sh "${mvn}/bin/mvn clean verify sonar:sonar -Dsonar.projectKey=gestion-des-personnes -Dsonar.projectName='gestion-des-personnes'"
+                }
+            }
         }
-      }
-
+    }
 /*
     stage('docker build and push') {
       steps {
