@@ -76,7 +76,7 @@ pipeline {
 
     stage('sonarque quality gate') {
         steps {
-            timeout(time: 15, unit: 'MINUTES') {
+            timeout(time: 5, unit: 'MINUTES') {
                 waitForQualityGate abortPipeline: true
             }
         }
