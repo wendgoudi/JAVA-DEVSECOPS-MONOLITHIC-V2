@@ -62,7 +62,7 @@ pipeline {
           }
       }
     }
-
+*/
     stage('sast-sonarqube-analysis') {
         steps {
             script {
@@ -73,7 +73,7 @@ pipeline {
             }        
         }
     }
-
+/*
     stage('sonarque quality gate') {
         steps {
             timeout(time: 5, unit: 'MINUTES') {
@@ -81,29 +81,9 @@ pipeline {
             }
         }
     }
-*/
-    stage('SAST - SonarQube Analysis & Quality Gate') {
-        steps {
-            script {
-                def mvn = tool 'Default Maven'               
-                // Exécution de l'analyse SonarQube
-                withSonarQubeEnv('SonarQube') {
-                    sh """
-                        ${mvn}/bin/mvn clean verify sonar:sonar \
-                        -Dsonar.projectKey=gestion-des-personnes \
-                        -Dsonar.projectName='gestion-des-personnes'
-                    """
-                }
-                // Vérification du Quality Gate
-                timeout(time: 15, unit: 'MINUTES') {
-                    waitForQualityGate abortPipeline: true
-                }
-            }
-        }
-    }
 
    
-/*
+
     stage('docker build and push') {
       steps {
         withDockerRegistry([credentialsId: "docker-hub", url: ""]) {
