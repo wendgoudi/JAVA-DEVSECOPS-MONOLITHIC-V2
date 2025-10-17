@@ -82,17 +82,40 @@ pipeline {
         }
     }
 
+    stage('Dependency Check') {
+    steps {
+        // Nettoyage avant exécution (important pour éviter les rapports corrompus)
+        sh 'rm -rf target/dependency-check-report* || true'
 
-    stage('dependency check') {
-      steps {
-        sh "mvn dependency-check:check"
-      }
-      post {
-        always {
-          dependencyCheckPublisher pattern: 'target/dependency-check-report.xml'
-        }
-      }
+        // Exécution du scan OWASP Dependency Check
+        sh '''
+        mvn org.owasp:dependency-check-maven:8.4.0:check \
+            -Dformat=ALL \
+            -DfailBuildOnCVSS=8 \
+            -DautoUpdate=true \
+            -DskipTestScope=true \
+            -DdataDirectory=target/dependency-check-data \
+            -DoutputDirectory=target/dependency-check-report
+        '''
     }
+
+    post {
+        always {
+        // Publie le rapport XML pour le plugin Jenkins Dependency-Check
+        dependencyCheckPublisher pattern: 'target/dependency-check-report/dependency-check-report.xml'
+
+        // Archive tous les rapports pour consultation manuelle
+        archiveArtifacts artifacts: 'target/dependency-check-report/*', fingerprint: true
+        }
+        failure {
+        echo "Échec du build à cause d'une vulnérabilité critique détectée par OWASP Dependency Check."
+        }
+        success {
+        echo "Analyse Dependency Check terminée avec succès."
+        }
+    }
+    }
+
 
 
  /*  

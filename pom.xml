@@ -80,42 +80,29 @@
             </executions>
             </plugin>
 
-            <!-- OWASP Dependency Check Plugin (corrigé et fonctionnel) -->
+        <!-- OWASP Dependency Check Plugin (corrigé et fonctionnel) -->
             <plugin>
-                <groupId>org.owasp</groupId>
-                <artifactId>dependency-check-maven</artifactId>
-                <version>8.4.0</version>
+            <groupId>org.owasp</groupId>
+            <artifactId>dependency-check-maven</artifactId>
+            <version>8.4.0</version>
 
-                <configuration>
-                    <!-- Formats de rapport -->
-                    <format>HTML,XML,JSON</format>
+            <configuration>
+                <format>HTML,XML,JSON</format>
+                <dataDirectory>${project.build.directory}/dependency-check-data</dataDirectory>
+                <outputDirectory>${project.build.directory}/dependency-check-report</outputDirectory>
+                <failBuildOnCVSS>8</failBuildOnCVSS>
+                <autoUpdate>true</autoUpdate>
+                <skipTestScope>true</skipTestScope>
+                <connectionTimeout>600000</connectionTimeout>
+            </configuration>
 
-                    <!-- Répertoire pour la base CVE -->
-                    <dataDirectory>${project.build.directory}/dependency-check-data</dataDirectory>
-
-                    <!-- Répertoire des rapports -->
-                    <outputDirectory>${project.build.directory}/dependency-check-report</outputDirectory>
-
-                    <!-- Échec du build si CVSS >= 8 -->
-                    <failBuildOnCVSS>8</failBuildOnCVSS>
-
-                    <!-- Met à jour automatiquement la base CVE -->
-                    <autoUpdate>true</autoUpdate>
-
-                    <!-- Ignore les dépendances de test -->
-                    <skipTestScope>true</skipTestScope>
-
-                    <!-- Timeout réseau -->
-                    <connectionTimeout>600000</connectionTimeout>
-                </configuration>
-
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>check</goal>
-                        </goals>
-                    </execution>
-                </executions>
+            <executions>
+                <execution>
+                <goals>
+                    <goal>check</goal>
+                </goals>
+                </execution>
+            </executions>
             </plugin>
 
         </plugins>
