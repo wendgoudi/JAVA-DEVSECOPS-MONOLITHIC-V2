@@ -81,7 +81,7 @@ pipeline {
             }
         }
     }
-
+ /* 
     stage('Dependency Check') {
     steps {
         // Nettoyage avant exécution (important pour éviter les rapports corrompus)
@@ -115,10 +115,7 @@ pipeline {
         }
     }
     }
-
-
-
- /*  
+ 
 
     stage('docker build and push') {
       steps {
