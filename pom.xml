@@ -81,7 +81,29 @@
             </plugin>
 
         <!-- OWASP Dependency Check Plugin (corrigé et fonctionnel) -->
+            <plugin>
+            <groupId>org.owasp</groupId>
+            <artifactId>dependency-check-maven</artifactId>
+            <version>8.4.0</version>
 
+            <configuration>
+                <format>HTML,XML,JSON</format>
+                <dataDirectory>${project.build.directory}/dependency-check-data</dataDirectory>
+                <outputDirectory>${project.build.directory}/dependency-check-report</outputDirectory>
+                <failBuildOnCVSS>8</failBuildOnCVSS>
+                <autoUpdate>true</autoUpdate>
+                <skipTestScope>true</skipTestScope>
+                <connectionTimeout>600000</connectionTimeout>
+            </configuration>
+
+            <executions>
+                <execution>
+                <goals>
+                    <goal>check</goal>
+                </goals>
+                </execution>
+            </executions>
+            </plugin>
         </plugins>
     </build>
 

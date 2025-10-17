@@ -81,7 +81,7 @@ pipeline {
             }
         }
     }
- /* 
+
     stage('Dependency Check') {
     steps {
         // Nettoyage avant exécution (important pour éviter les rapports corrompus)
@@ -90,12 +90,10 @@ pipeline {
         // Exécution du scan OWASP Dependency Check
         sh '''
         mvn org.owasp:dependency-check-maven:8.4.0:check \
-            -Dformat=ALL \
-            -DfailBuildOnCVSS=8 \
-            -DautoUpdate=true \
-            -DskipTestScope=true \
+            -DautoUpdate=false \
             -DdataDirectory=target/dependency-check-data \
-            -DoutputDirectory=target/dependency-check-report
+            -DoutputDirectory=target/dependency-check-report \
+            -Dformat=ALL
         '''
     }
 
@@ -116,7 +114,7 @@ pipeline {
     }
     }
  
-
+ /* 
     stage('docker build and push') {
       steps {
         withDockerRegistry([credentialsId: "docker-hub", url: ""]) {
