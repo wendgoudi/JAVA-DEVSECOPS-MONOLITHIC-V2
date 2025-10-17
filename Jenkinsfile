@@ -82,7 +82,7 @@ pipeline {
         }
     }
 
-/*  
+
     stage('dependency check') {
       steps {
         sh "mvn dependency-check:check"
@@ -95,7 +95,7 @@ pipeline {
     }
 
 
- 
+ /*  
 
     stage('docker build and push') {
       steps {
