@@ -80,6 +80,50 @@
             </executions>
             </plugin>
 
+            <!-- OWASP Dependency Check Plugin (Version 8.4.0) -->
+            <plugin>
+                <groupId>org.owasp</groupId>
+                <artifactId>dependency-check-maven</artifactId>
+                <version>8.4.0</version>
+
+                <configuration>
+                    <!-- Formats de rapports générés -->
+                    <format>HTML,XML,JSON</format>
+
+                    <!-- Répertoire où seront stockées les données CVE pour éviter les téléchargements répétitifs -->
+                    <dataDirectory>${project.build.directory}/dependency-check-data</dataDirectory>
+
+                    <!-- Répertoire où les rapports seront générés -->
+                    <outputDirectory>${project.build.directory}/dependency-check-report</outputDirectory>
+
+                    <!-- Fait échouer le build si CVSS >= 8 -->
+                    <failBuildOnCVSS>8</failBuildOnCVSS>
+
+                    <!-- Met à jour automatiquement la base CVE -->
+                    <autoUpdate>true</autoUpdate>
+
+                    <!-- Ignore les dépendances utilisées uniquement pour les tests -->
+                    <skipTestScope>true</skipTestScope>
+
+                    <!-- Timeout réseau (important pour Jenkins) -->
+                    <connectionTimeout>600000</connectionTimeout>
+
+                    <!-- Dossier à scanner -->
+                    <scanSet>
+                        <scan>${project.basedir}</scan>
+                    </scanSet>
+
+                </configuration>
+
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
         </plugins>
     </build>
 
