@@ -81,18 +81,27 @@ pipeline {
             }
         }
     }
-
-    stage('dependency check') {
-      steps {
-        sh "mvn dependency-check:check"
-      }
-      post {
-        always {
-          dependencyCheckPublisher pattern: 'target/dependency-check-report.xml'
-        }
-      }
+stage('Dependency Check') {
+    environment {
+        NVD_API_KEY = credentials('NVD_API_KEY') // ID stocké dans Jenkins Credentials
     }
- 
+    steps {
+        sh '''
+          mvn org.owasp:dependency-check-maven:12.1.0:check \
+              -DnvdApiKey=$NVD_API_KEY \
+              -Dformat=ALL \
+              -DfailBuildOnCVSS=8 \
+              -DdataDirectory=target/dependency-check-data \
+              -DoutputDirectory=target/dependency-check-report
+        '''
+    }
+    post {
+        always {
+            dependencyCheckPublisher pattern: 'target/dependency-check-report/dependency-check-report.xml'
+        }
+    }
+}
+
  /* 
     stage('docker build and push') {
       steps {
