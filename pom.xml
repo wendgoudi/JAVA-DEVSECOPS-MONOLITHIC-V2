@@ -82,17 +82,15 @@
 
         <!-- OWASP Dependency Check Plugin (corrigé et fonctionnel) -->
             <plugin>
-                <groupId>org.owasp</groupId>
-                <artifactId>dependency-check-maven</artifactId>
-                <version>12.1.0</version>
-                <configuration>
-                    <failBuildOnCVSS>8</failBuildOnCVSS>
-                    <format>ALL</format>
-                    <dataDirectory>${project.build.directory}/dependency-check-data</dataDirectory>
-                    <outputDirectory>${project.build.directory}/dependency-check-report</outputDirectory>
-                    <!-- Active l'utilisation de la clé API -->
-                    <nvdApiKey>${env.NVD_API_KEY}</nvdApiKey>
-                </configuration>
+              <groupId>org.owasp</groupId>
+              <artifactId>dependency-check-maven</artifactId>
+              <version>12.1.0</version>
+              <configuration>
+                <autoUpdate>false</autoUpdate>
+                <dataDirectory>${project.basedir}/dependency-check-data</dataDirectory>
+                <format>ALL</format>
+                <failBuildOnCVSS>8</failBuildOnCVSS>
+              </configuration>
             </plugin>
             
         </plugins>
