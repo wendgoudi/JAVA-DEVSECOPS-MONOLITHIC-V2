@@ -87,6 +87,7 @@ stage('Dependency Check') {
     }
     steps {
         sh '''
+          echo "Using NVD API key: ${#NVD_API_KEY}"
           mvn org.owasp:dependency-check-maven:12.1.0:check \
               -DnvdApiKey=$NVD_API_KEY \
               -Dformat=ALL \
