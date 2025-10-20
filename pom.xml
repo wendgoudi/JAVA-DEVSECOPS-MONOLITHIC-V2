@@ -80,19 +80,43 @@
             </executions>
             </plugin>
 
-        <!-- OWASP Dependency Check Plugin (corrigé et fonctionnel) -->
-            <plugin>
-              <groupId>org.owasp</groupId>
-              <artifactId>dependency-check-maven</artifactId>
-              <version>12.1.0</version>
-              <configuration>
-                <autoUpdate>false</autoUpdate>
-                <dataDirectory>${project.basedir}/dependency-check-data</dataDirectory>
+        <!-- OWASP Dependency Check Plugin (version corrigée et fonctionnelle) -->
+        <plugin>
+            <groupId>org.owasp</groupId>
+            <artifactId>dependency-check-maven</artifactId>
+            <version>12.1.0</version>
+            <configuration>
+                <!-- Active la mise à jour automatique de la base NVD -->
+                <autoUpdate>true</autoUpdate>
+
+                <!-- Répertoire persistant pour stocker la base NVD -->
+                <dataDirectory>/var/jenkins_home/dependency-check-data</dataDirectory>
+
+                <!-- Génération de tous les formats de rapport -->
                 <format>ALL</format>
+
+                <!-- Échoue le build si CVSS ≥ 8 -->
                 <failBuildOnCVSS>8</failBuildOnCVSS>
-              </configuration>
-            </plugin>
-            
+
+                <!-- Répertoire de sortie des rapports -->
+                <outputDirectory>${project.build.directory}/dependency-check-report</outputDirectory>
+
+                <!-- Active les analyzers Maven et suppression de ceux inutiles -->
+                <enableExperimental>true</enableExperimental>
+                <suppressionFiles>${project.basedir}/dependency-check-suppressions.xml</suppressionFiles>
+
+                <!-- (Optionnel mais recommandé) Utiliser la clé API NVD -->
+                <nvdApiKey>${env.NVD_API_KEY}</nvdApiKey>
+            </configuration>
+            <executions>
+                <execution>
+                    <goals>
+                        <goal>check</goal>
+                    </goals>
+                </execution>
+            </executions>
+        </plugin>
+
         </plugins>
     </build>
 
