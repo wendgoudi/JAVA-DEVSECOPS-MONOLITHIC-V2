@@ -82,37 +82,29 @@ pipeline {
         }
     }
 
-    stage('Dependency Check') {
-        environment {
-            NVD_API_KEY = credentials('NVD_API_KEY')
-        }
-        steps {
-            sh '''
-            echo "Running OWASP Dependency Check..."
-            
-            # Créer un répertoire persistant pour la base
-            mkdir -p /var/jenkins_home/dependency-check-data
+stage('Dependency Check') {
+    environment {
+        NVD_API_KEY = credentials('NVD_API_KEY')
+    }
+    steps {
+        sh '''
+        echo "Running OWASP Dependency Check..."
+        mkdir -p /var/jenkins_home/dependency-check-data
+        chown -R $(whoami):$(whoami) /var/jenkins_home/dependency-check-data
 
-            # Mettre à jour la base NVD
-            mvn org.owasp:dependency-check-maven:12.1.0:update \
-                -DnvdApiKey=$NVD_API_KEY \
-                -DdataDirectory=/var/jenkins_home/dependency-check-data
-
-            # Lancer l’analyse
-            mvn org.owasp:dependency-check-maven:12.1.0:check \
-                -DnvdApiKey=$NVD_API_KEY \
-                -Dformat=ALL \
-                -DfailBuildOnCVSS=8 \
-                -DdataDirectory=/var/jenkins_home/dependency-check-data \
-                -DoutputDirectory=target/dependency-check-report
-            '''
-        }
-        post {
-            always {
-                dependencyCheckPublisher pattern: 'target/dependency-check-report/dependency-check-report.xml'
-            }
+        mvn org.owasp:dependency-check-maven:12.1.0:check \
+            -DnvdApiKey=$NVD_API_KEY \
+            -DdataDirectory=/var/jenkins_home/dependency-check-data \
+            -Dformat=ALL \
+            -DfailBuildOnCVSS=8
+        '''
+    }
+    post {
+        always {
+            dependencyCheckPublisher pattern: 'target/dependency-check-report/dependency-check-report.xml'
         }
     }
+}
 
 
  /* 
