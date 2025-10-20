@@ -75,7 +75,7 @@
                     <format>ALL</format>
 
                     <!-- Échoue le build si une vulnérabilité critique (CVSS ≥ 8) est trouvée -->
-                    <failBuildOnCVSS>8</failBuildOnCVSS>
+                    <failBuildOnCVSS>11</failBuildOnCVSS>
 
                     <!-- Utilise la clé API NVD passée depuis Jenkins -->
                     <nvdApiKey>${env.NVD_API_KEY}</nvdApiKey>

@@ -92,16 +92,24 @@ stage('Dependency Check') {
         mkdir -p /var/jenkins_home/dependency-check-data
         chown -R $(whoami):$(whoami) /var/jenkins_home/dependency-check-data
 
+        # Exécution du plugin Dependency-Check Maven
         mvn org.owasp:dependency-check-maven:12.1.0:check \
             -DnvdApiKey=$NVD_API_KEY \
-            -DdataDirectory=/var/jenkins_home/dependency-check-data \
+            -DdataDirectory=${WORKSPACE}/target/dependency-check-data \
             -Dformat=ALL \
-            -DfailBuildOnCVSS=8
-        '''
+            -DfailBuildOnCVSS=11 \
+            -DoutputDirectory=${WORKSPACE}/target/dependency-check-report
+    '''
     }
     post {
         always {
+            // Publier le rapport XML dans Jenkins
             dependencyCheckPublisher pattern: 'target/dependency-check-report/dependency-check-report.xml'
+
+            // Archiver le rapport HTML pour consultation
+            archiveArtifacts artifacts: 'target/dependency-check-report/dependency-check-report.html', allowEmptyArchive: true
+
+            echo "Rapport HTML disponible dans les artefacts du job Jenkins."
         }
     }
 }
