@@ -85,14 +85,14 @@ pipeline {
     stage('Dependency Check') {
         environment {
             OSSINDEX_CRED = credentials('OSSINDEX_CRED')
-            NVD_API_KEY = credentials('NVD_API_KEY')
+            //NVD_API_KEY = credentials('NVD_API_KEY')
         }
         steps {
             sh '''
             echo "=== Running OWASP Dependency Check ==="
             mvn org.owasp:dependency-check-maven:12.1.0:check \
-                -DossindexUsername=${OSSINDEX_CRED_USR} \
-                -DossindexPassword=${OSSINDEX_CRED_PSW} \
+                -Dossindex.username=${OSSINDEX_CRED_USR} \
+                -Dossindex.password=${OSSINDEX_CRED_PSW} \
                 -Dnvd.api.key=${NVD_API_KEY} \
                 -Dformat=HTML \
                 -DoutputDirectory=target/dependency-check-report \
