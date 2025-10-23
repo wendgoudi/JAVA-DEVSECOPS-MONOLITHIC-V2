@@ -57,7 +57,7 @@
     <build>
         <plugins>
 
-            <!-- Dependency check plugin) -->       
+            <!-- OWASP Dependency Check Plugin -->
             <plugin>
                 <groupId>org.owasp</groupId>
                 <artifactId>dependency-check-maven</artifactId>
@@ -70,22 +70,25 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <!-- Répertoire pour la base locale (persistante entre builds Jenkins) -->
+                    <!-- Répertoire de la base locale -->
                     <dataDirectory>/var/lib/jenkins/dependency-check-data</dataDirectory>
 
                     <!-- Rapport HTML -->
                     <format>HTML</format>
                     <outputDirectory>${project.build.directory}/dependency-check-report</outputDirectory>
 
-                    <!-- Ignorer les vulnérabilités pour ne pas interrompre le pipeline -->
+                    <!-- Ne pas échouer le build -->
                     <failBuildOnCVSS>11</failBuildOnCVSS>
 
-                    <!-- Désactiver les suppressions si non utilisé -->
+                    <!-- Fichier de suppression (optionnel) -->
                     <suppressionFile></suppressionFile>
 
-                    <!-- Utiliser les credentials OSS Index -->
-                    <ossIndexUsername>${env.OSSINDEX_USERNAME}</ossIndexUsername>
-                    <ossIndexPassword>${env.OSSINDEX_PASSWORD}</ossIndexPassword>
+                    <!-- Identifiants OSS Index (fournis par Jenkins credentials) -->
+                    <ossIndexUsername>${env.OSSINDEX_CRED_USR}</ossIndexUsername>
+                    <ossIndexPassword>${env.OSSINDEX_CRED_PSW}</ossIndexPassword>
+
+                    <!-- (Optionnel) Clé API NVD si utilisée -->
+                    <nvdApiKey>${env.NVD_API_KEY}</nvdApiKey>
                 </configuration>
             </plugin>
 
