@@ -83,10 +83,10 @@
                     <!-- Fichier de suppression (optionnel) -->
                     <suppressionFile></suppressionFile>
 
-                    <!-- Identifiants OSS Index (fournis par Jenkins credentials) -->
+                    <!-- Identifiants OSS Index (fournis par Jenkins credentials) 
                     <ossIndexUsername>${env.OSSINDEX_CRED_USR}</ossIndexUsername>
                     <ossIndexPassword>${env.OSSINDEX_CRED_PSW}</ossIndexPassword>
-
+                                                                                    -->
                     <!-- (Optionnel) Clé API NVD si utilisée -->
                     <nvdApiKey>${env.NVD_API_KEY}</nvdApiKey>
                 </configuration>
