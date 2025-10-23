@@ -57,41 +57,6 @@
     <build>
         <plugins>
 
-            <!-- OWASP Dependency Check Plugin -->
-            <plugin>
-                <groupId>org.owasp</groupId>
-                <artifactId>dependency-check-maven</artifactId>
-                <version>12.1.0</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>check</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <!-- Répertoire de la base locale -->
-                    <dataDirectory>/var/lib/jenkins/dependency-check-data</dataDirectory>
-
-                    <!-- Rapport HTML -->
-                    <format>HTML</format>
-                    <outputDirectory>${project.build.directory}/dependency-check-report</outputDirectory>
-
-                    <!-- Ne pas échouer le build -->
-                    <failBuildOnCVSS>11</failBuildOnCVSS>
-
-                    <!-- Fichier de suppression (optionnel) -->
-                    <suppressionFile></suppressionFile>
-
-                    <!-- Identifiants OSS Index (fournis par Jenkins credentials) -->
-                    <ossIndexUsername>${env.OSSINDEX_CRED_USR}</ossIndexUsername>
-                    <ossIndexPassword>${env.OSSINDEX_CRED_PSW}</ossIndexPassword>
-                                                                                    
-                    <!-- (Optionnel) Clé API NVD si utilisée -->
-                    <nvdApiKey>${env.NVD_API_KEY}</nvdApiKey>
-                </configuration>
-            </plugin>
-
         </plugins>
     </build>
 
