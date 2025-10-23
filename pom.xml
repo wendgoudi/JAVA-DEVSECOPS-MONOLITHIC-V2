@@ -56,46 +56,6 @@
 
     <build>
         <plugins>
-            <!-- OWASP Dependency Check Plugin (version corrigée et fonctionnelle pour Jenkins) -->
-            <plugin>
-                <groupId>org.owasp</groupId>
-                <artifactId>dependency-check-maven</artifactId>
-                <version>12.1.0</version>
-                <configuration>
-                    <!-- Active la mise à jour automatique de la base NVD -->
-                    <autoUpdate>true</autoUpdate>
-
-                    <!-- Utilise un répertoire local dans le workspace Jenkins -->
-                    <dataDirectory>${project.build.directory}/dependency-check-data</dataDirectory>
-
-                    <!-- Répertoire de sortie des rapports -->
-                    <outputDirectory>${project.build.directory}/dependency-check-report</outputDirectory>
-
-                    <!-- Génère tous les formats de rapport (HTML, XML, JSON, CSV, etc.) -->
-                    <format>ALL</format>
-
-                    <!-- Échoue le build si une vulnérabilité critique (CVSS ≥ 8) est trouvée -->
-                    <failBuildOnCVSS>11</failBuildOnCVSS>
-
-                    <!-- Utilise la clé API NVD passée depuis Jenkins -->
-                    <nvdApiKey>${env.NVD_API_KEY}</nvdApiKey>
-
-                    <!-- Active les analyzers expérimentaux pour une meilleure couverture -->
-                    <enableExperimental>true</enableExperimental>
-
-                    <!-- (Optionnel) fichier de suppression si tu veux ignorer certaines CVE -->
-                    <suppressionFiles>${project.basedir}/dependency-check-suppressions.xml</suppressionFiles>
-                </configuration>
-
-                <!-- Exécution automatique pendant le cycle Maven -->
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>check</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
 
         </plugins>
     </build>

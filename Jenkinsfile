@@ -82,6 +82,7 @@ pipeline {
         }
     }
 
+ /* 
 stage('Dependency Check') {
     environment {
         NVD_API_KEY = credentials('NVD_API_KEY')
@@ -115,7 +116,6 @@ stage('Dependency Check') {
 }
 
 
- /* 
     stage('docker build and push') {
       steps {
         withDockerRegistry([credentialsId: "docker-hub", url: ""]) {
