@@ -82,40 +82,28 @@ pipeline {
         }
     }
 
- /* 
-stage('Dependency Check') {
-    environment {
-        NVD_API_KEY = credentials('NVD_API_KEY')
-    }
-    steps {
-        sh '''
-        echo "Running OWASP Dependency Check..."
-        mkdir -p /var/jenkins_home/dependency-check-data
-        chown -R $(whoami):$(whoami) /var/jenkins_home/dependency-check-data
 
-        # Exécution du plugin Dependency-Check Maven
-        mvn org.owasp:dependency-check-maven:12.1.0:check \
-            -DnvdApiKey=$NVD_API_KEY \
-            -DdataDirectory=${WORKSPACE}/target/dependency-check-data \
-            -Dformat=ALL \
-            -DfailBuildOnCVSS=11 \
-            -DoutputDirectory=${WORKSPACE}/target/dependency-check-report
-    '''
-    }
-    post {
-        always {
-            // Publier le rapport XML dans Jenkins
-            dependencyCheckPublisher pattern: 'target/dependency-check-report/dependency-check-report.xml'
-
-            // Archiver le rapport HTML pour consultation
-            archiveArtifacts artifacts: 'target/dependency-check-report/dependency-check-report.html', allowEmptyArchive: true
-
-            echo "Rapport HTML disponible dans les artefacts du job Jenkins."
+    stage('Dependency Check') {
+        environment {
+            OSSINDEX_USERNAME = credentials('OSSINDEX_USERNAME')
+            OSSINDEX_PASSWORD = credentials('OSSINDEX_PASSWORD')
+        }
+        steps {
+            sh '''
+            echo "=== Running OWASP Dependency Check ==="
+            mvn org.owasp:dependency-check-maven:12.1.0:check \
+                -Dossindex.username=${OSSINDEX_USERNAME} \
+                -Dossindex.password=${OSSINDEX_PASSWORD} \
+                -Dnvd.api.key=${NVD_API_KEY} \
+                -Dformat=HTML \
+                -DoutputDirectory=target/dependency-check-report \
+                -DfailBuildOnCVSS=11 || true
+            echo "Report available in target/dependency-check-report/dependency-check-report.html"
+            '''
         }
     }
-}
 
-
+ /* 
     stage('docker build and push') {
       steps {
         withDockerRegistry([credentialsId: "docker-hub", url: ""]) {

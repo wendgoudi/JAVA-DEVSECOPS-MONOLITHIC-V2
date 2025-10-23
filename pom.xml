@@ -57,6 +57,38 @@
     <build>
         <plugins>
 
+            <!-- Dependency check plugin) -->       
+            <plugin>
+                <groupId>org.owasp</groupId>
+                <artifactId>dependency-check-maven</artifactId>
+                <version>12.1.0</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <!-- Répertoire pour la base locale (persistante entre builds Jenkins) -->
+                    <dataDirectory>/var/lib/jenkins/dependency-check-data</dataDirectory>
+
+                    <!-- Rapport HTML -->
+                    <format>HTML</format>
+                    <outputDirectory>${project.build.directory}/dependency-check-report</outputDirectory>
+
+                    <!-- Ignorer les vulnérabilités pour ne pas interrompre le pipeline -->
+                    <failBuildOnCVSS>11</failBuildOnCVSS>
+
+                    <!-- Désactiver les suppressions si non utilisé -->
+                    <suppressionFile></suppressionFile>
+
+                    <!-- Utiliser les credentials OSS Index -->
+                    <ossIndexUsername>${env.OSSINDEX_USERNAME}</ossIndexUsername>
+                    <ossIndexPassword>${env.OSSINDEX_PASSWORD}</ossIndexPassword>
+                </configuration>
+            </plugin>
+
         </plugins>
     </build>
 
