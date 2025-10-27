@@ -84,21 +84,31 @@ pipeline {
     }
 
     stage('Snyk Scan') {
+            environment {
+            SNYK_TOKEN = credentials('SNYK_TOKEN')
+        }
         steps {
             sh '''
                 # Authentification
                 snyk auth $SNYK_TOKEN
                   
-                # Scan Maven project
-                snyk test --all-projects --severity-threshold=medium
-                  
-                # Optionnel : générer un rapport en JSON
-                snyk test --all-projects --json > target/snyk-report.json
-            '''
+                echo "Analyse de sécurité avec Snyk..."
+                snyk test --severity-threshold=high --json-file-output=snyk-report.json
+
+                echo "Génération du rapport HTML..."
+                snyk-to-html -i snyk-report.json -o snyk-report.html
+                '''
         }
         post {
             always {
-                archiveArtifacts artifacts: 'target/snyk-report.json', allowEmptyArchive: true
+                publishHTML([
+                    reportDir: '.',
+                    reportFiles: 'snyk-report.html',
+                    reportName: 'Snyk Security Report'
+                ])
+            }
+            failure {
+                echo 'Snyk a détecté des vulnérabilités critiques ! Build échoué.'
             }
         }
     }
