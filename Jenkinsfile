@@ -102,9 +102,13 @@ pipeline {
     post {
         always {
             publishHTML([
-                reportDir: '.',
-                reportFiles: 'snyk-report.html',
-                reportName: 'Snyk Security Report'
+                allowMissing: false,
+                alwaysLinkToLastBuild: true,
+                keepAll: true,
+                reportDir: 'target/site',
+                reportFiles: 'index.html',
+                reportName: 'Project Report',
+                reportTitles: 'HTML Report'
             ])
         }
         failure {
