@@ -83,35 +83,36 @@ pipeline {
         }
     }
 
-    stage('Snyk Scan') {
-            environment {
+    stage('Snyk Security Scan') {
+        environment {
             SNYK_TOKEN = credentials('SNYK_TOKEN')
-        }
-        steps {
-            sh '''
-                # Authentification
-                snyk auth $SNYK_TOKEN
-                  
-                echo "Analyse de sécurité avec Snyk..."
-                snyk test --severity-threshold=high --json-file-output=snyk-report.json
+    }
+    steps {
+        sh '''
+          echo "Authentification à Snyk..."
+          snyk auth $SNYK_TOKEN
 
-                echo "Génération du rapport HTML..."
-                snyk-to-html -i snyk-report.json -o snyk-report.html
-                '''
+          echo "Analyse de sécurité avec Snyk..."
+          snyk test --severity-threshold=high --json-file-output=snyk-report.json
+
+          echo "Génération du rapport HTML..."
+          snyk-to-html -i snyk-report.json -o snyk-report.html
+        '''
+    }
+    post {
+        always {
+            publishHTML([
+                reportDir: '.',
+                reportFiles: 'snyk-report.html',
+                reportName: 'Snyk Security Report'
+            ])
         }
-        post {
-            always {
-                publishHTML([
-                    reportDir: '.',
-                    reportFiles: 'snyk-report.html',
-                    reportName: 'Snyk Security Report'
-                ])
-            }
-            failure {
-                echo 'Snyk a détecté des vulnérabilités critiques ! Build échoué.'
-            }
+        failure {
+            echo 'Snyk a détecté des vulnérabilités critiques ! Build échoué.'
         }
     }
+}
+
 
  /* 
     stage('docker build and push') {
