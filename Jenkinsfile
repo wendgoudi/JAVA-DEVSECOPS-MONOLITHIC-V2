@@ -33,6 +33,7 @@ pipeline {
         archive 'target/*.jar' //Pour qu'on puisse télécharger ultérieurement
       }
     }
+
 /*   
     stage('repository recovery') {
         steps {
@@ -78,6 +79,26 @@ pipeline {
         steps {
             timeout(time: 5, unit: 'MINUTES') {
                 waitForQualityGate abortPipeline: true
+            }
+        }
+    }
+
+    stage('Snyk Scan') {
+        steps {
+            sh '''
+                # Authentification
+                snyk auth $SNYK_TOKEN
+                  
+                # Scan Maven project
+                snyk test --all-projects --severity-threshold=medium
+                  
+                # Optionnel : générer un rapport en JSON
+                snyk test --all-projects --json > target/snyk-report.json
+            '''
+        }
+        post {
+            always {
+                archiveArtifacts artifacts: 'target/snyk-report.json', allowEmptyArchive: true
             }
         }
     }
