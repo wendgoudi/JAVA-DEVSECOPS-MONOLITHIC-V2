@@ -84,7 +84,7 @@ pipeline {
     }
 */
 
-    stage('sonarQube analysis & quality gate') {
+    stage('sast sonarQube analysis & quality gate') {
         steps {
             script {
                 // Exécution de l’analyse SonarQube
