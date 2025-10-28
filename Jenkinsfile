@@ -63,8 +63,8 @@ pipeline {
           }
       }
     }
-*/
-    stage('sast-sonarqube-analysis') {
+
+    stage('sast sonarqube analysis') {
         steps {
             script {
                 def mvn = tool 'Default Maven'
@@ -82,8 +82,26 @@ pipeline {
             }
         }
     }
+*/
 
-    stage('Snyk-security-scan') {
+    stage('sonarQube analysis & quality gate') {
+        steps {
+            script {
+                // Exécution de l’analyse SonarQube
+                def mvn = tool 'Default Maven'
+                withSonarQubeEnv('SonarQube') {
+                    sh "${mvn}/bin/mvn clean verify sonar:sonar -Dsonar.projectKey=gestion-des-personnes -Dsonar.projectName='gestion-des-personnes'"
+                }
+
+                // Attente du Quality Gate (5 minutes max)
+                timeout(time: 5, unit: 'MINUTES') {
+                    waitForQualityGate abortPipeline: true
+                }
+            }
+        }
+    }
+
+    stage('snyk security scan') {
         environment {
             SNYK_TOKEN = credentials('SNYK_TOKEN')
         }
