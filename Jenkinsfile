@@ -63,28 +63,9 @@ pipeline {
           }
       }
     }
-
-    stage('sast sonarqube analysis') {
-        steps {
-            script {
-                def mvn = tool 'Default Maven'
-                withSonarQubeEnv('SonarQube') {
-                    sh "${mvn}/bin/mvn clean verify sonar:sonar -Dsonar.projectKey=gestion-des-personnes -Dsonar.projectName='gestion-des-personnes'"
-                }
-            }        
-        }
-    }
-
-    stage('sonarque quality gate') {
-        steps {
-            timeout(time: 5, unit: 'MINUTES') {
-                waitForQualityGate abortPipeline: true
-            }
-        }
-    }
 */
 
-    stage('sast sonarQube analysis & quality gate') {
+    stage('SAST sonarQube analysis & quality gate') {
         steps {
             script {
                 // Exécution de l’analyse SonarQube
@@ -101,7 +82,7 @@ pipeline {
         }
     }
 
-    stage('snyk security scan') {
+    stage('SCA snyk security scan') {
         environment {
             SNYK_TOKEN = credentials('SNYK_TOKEN')
         }
