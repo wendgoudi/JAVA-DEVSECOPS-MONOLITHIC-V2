@@ -135,7 +135,7 @@ pipeline {
         timeout(time: 10, unit: 'MINUTES') {
         sh '''
             export DOCKER_BUILDKIT=0
-            docker build --progress=plain -t wendgoudi/gestion-personnes:latest .
+            docker build --no-cache -t wendgoudi/gestion-personnes:latest .
         '''
         }
       }
