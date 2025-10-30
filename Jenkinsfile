@@ -133,7 +133,7 @@ pipeline {
     stage('build docker image') {
       steps {
           sh '''
-          sh 'docker build -t wendgoudi/gestion-personnes:latest .'
+             docker build -t wendgoudi/gestion-personnes:latest .
           '''
       }
     }
