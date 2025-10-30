@@ -14,7 +14,7 @@ pipeline {
             sh "mvn -v"
         }
     }
-  */
+*/
     stage('docker version') {
         steps {
             sh "docker -v"
@@ -65,7 +65,7 @@ pipeline {
     }
 */
 
-    stage('SAST sonarqube analysis & quality gate') {
+    stage('sast sonarqube analysis & quality gate') {
         steps {
             script {
                 // Exécution de l’analyse SonarQube
@@ -82,7 +82,7 @@ pipeline {
         }
     }
 
-    stage('SCA snyk security scan') {
+    stage('sca snyk dependency scan') {
         environment {
             SNYK_TOKEN = credentials('SNYK_TOKEN')
         }
@@ -131,13 +131,61 @@ pipeline {
     }
 
     stage('build docker image') {
-      steps {
-          sh '''
-             docker build -t wendgoudi/gestion-personnes:latest .
-          '''
+    steps {
+        timeout(time: 10, unit: 'MINUTES') {
+        sh '''
+            export DOCKER_BUILDKIT=0
+            docker build --progress=plain -t wendgoudi/gestion-personnes:latest .
+        '''
+        }
       }
     }
 
+    stage('trivy container scan') {
+        steps {
+            script {
+                echo "Scanning Docker image with Trivy..."
+
+                // Scan image mais ne pas échouer en cas de vulnérabilités
+                sh '''
+                    trivy image --severity HIGH,CRITICAL --ignore-unfixed \
+                    --format json -o trivy-report.json wendgoudi/gestion-personnes:latest || true
+                '''
+
+                // Convert JSON -> HTML
+                sh '''
+                    trivy convert report trivy-report.json --format template \
+                    --template "@contrib/html.tpl" \
+                    --output trivy-report.html || true
+                '''
+
+                // Zip du rapport si besoin
+                sh '''
+                    zip -r trivy-report.zip trivy-report.json trivy-report.html || true
+                '''
+            }
+        }
+        post {
+            always {
+                echo "Archiving Trivy reports..."
+                archiveArtifacts artifacts: 'trivy-report.*', allowEmptyArchive: true
+
+                publishHTML([
+                    allowMissing: true,
+                    alwaysLinkToLastBuild: true,
+                    keepAll: true,
+                    reportDir: '.',
+                    reportFiles: 'trivy-report.html',
+                    reportName: 'Trivy Container Security Report'
+                ])
+            }
+            failure {
+                echo "Trivy detected vulnerabilities, but pipeline continues."
+            }
+        }
+    }
+
+ /* 
     stage('trivy container scan') {
         steps {
             script {
@@ -154,6 +202,11 @@ pipeline {
                     trivy convert report trivy-report.json --format template \
                     --template "@contrib/html.tpl" \
                     --output trivy-report.html || true
+                '''
+
+                // Zip du rapport si besoin
+                sh '''
+                    zip -r trivy-report.zip trivy-report.json trivy-report.html || true
                 '''
             }
         }
@@ -172,7 +225,7 @@ pipeline {
     }
 
 
- /* 
+
     stage('docker build and push') {
       steps {
         withDockerRegistry([credentialsId: "docker-hub", url: ""]) {
