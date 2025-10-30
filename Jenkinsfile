@@ -27,7 +27,7 @@ pipeline {
         }
     }
 
-    stage('Build Artifact') {
+    stage('build artifact') {
       steps {
         sh "mvn clean package -DskipTests=true"
         archive 'target/*.jar' //Pour qu'on puisse télécharger ultérieurement
@@ -41,7 +41,7 @@ pipeline {
         }
     } 
   
-    stage('trufflehog scan') {
+    stage('trufflehog secrets scan') {
       steps {
           script {
               sh '''
@@ -65,7 +65,7 @@ pipeline {
     }
 */
 
-    stage('SAST sonarQube analysis & quality gate') {
+    stage('SAST sonarqube analysis & quality gate') {
         steps {
             script {
                 // Exécution de l’analyse SonarQube
@@ -130,7 +130,15 @@ pipeline {
         }
     }
 
-    stage('Trivy Container Scan') {
+    stage('build docker image') {
+      steps {
+          sh '''
+          sh 'docker build -t wendgoudi/gestion-personnes:latest .'
+          '''
+      }
+    }
+
+    stage('trivy container scan') {
         steps {
             script {
                 echo "Scanning Docker image with Trivy..."
@@ -138,7 +146,7 @@ pipeline {
                 // Exécuter Trivy mais ne pas échouer même si vulnérabilités trouvées
                 sh '''
                     trivy image --severity HIGH,CRITICAL --ignore-unfixed \
-                    --format json -o trivy-report.json myapp:latest || true
+                    --format json -o trivy-report.json wendgoudi/gestion-personnes:latest || true
                 '''
 
                 // Convert JSON → HTML (template Trivy)
