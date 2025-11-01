@@ -194,6 +194,25 @@ pipeline {
       }
     }
 
+    stage('DAST - OWASP ZAP Scan') {
+        steps {
+            sh """
+            docker run --network=host -v \$(pwd):/zap/wrk ghcr.io/zaproxy/zaproxy:stable zap-baseline.py \
+            -t http://localhost:8080 \
+            -r zap-report.html || true
+            """
+        }
+        post {
+            always {
+                publishHTML([
+                    reportDir: '.',
+                    reportFiles: 'zap-report.html',
+                    reportName: 'OWASP ZAP DAST Report'
+                ])
+            }
+        }
+    }
+
  /* 
     stage('docker build and push') {
       steps {
