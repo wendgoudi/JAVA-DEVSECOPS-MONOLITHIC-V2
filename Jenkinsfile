@@ -185,47 +185,16 @@ pipeline {
         }
     }
 
- /* 
-    stage('trivy container scan') {
-        steps {
-            script {
-                echo "Scanning Docker image with Trivy..."
-
-                // Exécuter Trivy mais ne pas échouer même si vulnérabilités trouvées
-                sh '''
-                    trivy image --severity HIGH,CRITICAL --ignore-unfixed \
-                    --format json -o trivy-report.json wendgoudi/gestion-personnes:latest || true
-                '''
-
-                // Convert JSON → HTML (template Trivy)
-                sh '''
-                    trivy convert report trivy-report.json --format template \
-                    --template "@contrib/html.tpl" \
-                    --output trivy-report.html || true
-                '''
-
-                // Zip du rapport si besoin
-                sh '''
-                    zip -r trivy-report.zip trivy-report.json trivy-report.html || true
-                '''
-            }
+    stage('push code to docker hub') {
+      steps {
+        withDockerRegistry([credentialsId: "docker-hub", url: ""]) {
+          sh 'printenv'
+          sh 'docker push wendgoudi/gestion-personnes:latest'
         }
-        post {
-            always {
-                publishHTML([
-                    allowMissing: true,
-                    alwaysLinkToLastBuild: true,
-                    keepAll: true,
-                    reportDir: '.',
-                    reportFiles: 'trivy-report.html',
-                    reportName: 'Trivy Container Security Report'
-                ])
-            }
-        }
+      }
     }
 
-
-
+ /* 
     stage('docker build and push') {
       steps {
         withDockerRegistry([credentialsId: "docker-hub", url: ""]) {
