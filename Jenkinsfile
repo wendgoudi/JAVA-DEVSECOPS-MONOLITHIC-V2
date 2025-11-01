@@ -205,6 +205,9 @@ pipeline {
         post {
             always {
                 publishHTML([
+                    allowMissing: true,
+                    alwaysLinkToLastBuild: true,
+                    keepAll: true,
                     reportDir: '.',
                     reportFiles: 'zap-report.html',
                     reportName: 'OWASP ZAP DAST Report'
@@ -212,6 +215,7 @@ pipeline {
             }
         }
     }
+
 
  /* 
     stage('docker build and push') {
