@@ -69,7 +69,7 @@ spec:
     spec:
       containers:
         - name: gestion-personnes
-          image: gestion-personnes:1.0
+          image: gestion-personnes:latest
           ports:
             - containerPort: 8080
           env:
