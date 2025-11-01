@@ -18,7 +18,7 @@ services:
     container_name: gestion_personnes_app
     restart: always
     ports:
-      - "8090:8080"   # Port externe Docker -> Port interne Spring Boot
+      - "9090:8080"   # Port externe Docker -> Port interne Spring Boot
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/gestion_personnes?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
       SPRING_DATASOURCE_USERNAME: root
