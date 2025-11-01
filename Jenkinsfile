@@ -194,6 +194,17 @@ pipeline {
       }
     }
 
+    stage('start application with docker compose') {
+        steps {
+            sh """
+            echo "Starting app using Docker Compose..."
+            docker compose down || true
+            docker compose up -d
+            sleep 10
+            """
+        }
+    }
+ /* 
     stage('dast owasp zap scan') {
         steps {
             sh """
@@ -217,7 +228,7 @@ pipeline {
     }
 
 
- /* 
+
     stage('docker build and push') {
       steps {
         withDockerRegistry([credentialsId: "docker-hub", url: ""]) {
