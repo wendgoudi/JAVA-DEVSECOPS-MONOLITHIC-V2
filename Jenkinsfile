@@ -185,31 +185,11 @@ pipeline {
         }
     }
 
-    stage('push code to docker hub') {
-      steps {
-        withDockerRegistry([credentialsId: "docker-hub", url: ""]) {
-          sh 'printenv'
-          sh 'docker push wendgoudi/gestion-personnes:latest'
-        }
-      }
-    }
- /* 
-    stage('start application with docker compose') {
-        steps {
-            sh """
-            echo "Starting app using Docker Compose..."
-            docker compose down || true
-            docker compose up -d
-            sleep 10
-            """
-        }
-    }
-
     stage('dast owasp zap scan') {
         steps {
             sh """
             docker run --network=host -v \$(pwd):/zap/wrk ghcr.io/zaproxy/zaproxy:stable zap-baseline.py \
-            -t http://localhost:8080 \
+            -t http://192.168.220.1:9090 \
             -r zap-report.html || true
             """
         }
@@ -226,8 +206,26 @@ pipeline {
             }
         }
     }
+ /*
+    stage('start application with docker compose') {
+        steps {
+            sh """
+            echo "Starting app using Docker Compose..."
+            docker compose down || true
+            docker compose up -d
+            sleep 10
+            """
+        }
+    }
 
-
+    stage('push code to docker hub') {
+      steps {
+        withDockerRegistry([credentialsId: "docker-hub", url: ""]) {
+          sh 'printenv'
+          sh 'docker push wendgoudi/gestion-personnes:latest'
+        }
+      }
+    }
 
     stage('docker build and push') {
       steps {

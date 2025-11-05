@@ -14,7 +14,7 @@ services:
       - mysql_data:/var/lib/mysql
 
   app:
-    image: gestion-personnes:latest
+    image: gestion-personnes:1.0
     container_name: gestion_personnes_app
     restart: always
     ports:
