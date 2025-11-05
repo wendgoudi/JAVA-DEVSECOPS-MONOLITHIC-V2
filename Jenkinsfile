@@ -188,17 +188,17 @@ pipeline {
     stage('dast owasp zap scan') {
         steps {
             script {
-                echo "Running OWASP ZAP baseline scan..."
-
                 sh """
+                echo "Creating report directory..."
                 mkdir -p zap-report
 
+                echo "Running OWASP ZAP baseline scan..."
+
                 docker run --network=host \
-                    -v \$(pwd)/zap-report:/zap/wrk \
-                    --user \$(id -u):\$(id -g) \
+                    -v \$(pwd)/zap-report:/zap/wrk/reports \
                     ghcr.io/zaproxy/zaproxy:stable zap-baseline.py \
                     -t http://192.168.220.1:9090 \
-                    -r zap-report.html || true
+                    -r reports/zap-report.html || true
                 """
             }
         }
@@ -215,6 +215,7 @@ pipeline {
             }
         }
     }
+
  /*
     stage('dast owasp zap scan') {
         steps {
