@@ -14,7 +14,7 @@ pipeline {
             sh "mvn -v"
         }
     }
-*/
+
     stage('docker version') {
         steps {
             sh "docker -v"
@@ -26,7 +26,7 @@ pipeline {
             sh " kubectl version --client"
         }
     }
-
+*/
     stage('build artifact') {
       steps {
         sh "mvn clean package -DskipTests=true"
