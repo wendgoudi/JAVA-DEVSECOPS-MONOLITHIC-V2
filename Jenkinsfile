@@ -63,7 +63,7 @@ pipeline {
           }
       }
     }
-*/
+
 
     stage('sast sonarqube analysis & quality gate') {
         steps {
@@ -184,13 +184,14 @@ pipeline {
             }
         }
     }
-
+*/
     stage('dast owasp zap scan') {
         steps {
             script {
                 sh """
                 echo "Creating report directory..."
                 mkdir -p zap-report
+                chmod 777 zap-report 
 
                 echo "Running OWASP ZAP baseline scan..."
 
