@@ -34,14 +34,13 @@ pipeline {
       }
     }
 
-/*   
     stage('repository recovery') {
         steps {
             git branch: 'main', url: 'https://github.com/wendgoudi/JAVA-DEVSECOPS-MONOLITHIC-V2.git'
         }
     } 
   
-    stage('trufflehog secrets scan') {
+    stage('SECRETS - trufflehog scan') {
       steps {
           script {
               sh '''
@@ -64,8 +63,7 @@ pipeline {
       }
     }
 
-
-    stage('sast sonarqube analysis & quality gate') {
+    stage('SAST - sonarqube analysis & quality gate') {
         steps {
             script {
                 // Exécution de l’analyse SonarQube
@@ -82,7 +80,7 @@ pipeline {
         }
     }
 
-    stage('sca snyk dependency scan') {
+    stage('SCA - snyk dependency scan') {
         environment {
             SNYK_TOKEN = credentials('SNYK_TOKEN')
         }
@@ -130,7 +128,7 @@ pipeline {
         }
     }
 
-    stage('build docker image') {
+    stage('BUILD - docker image') {
     steps {
         timeout(time: 10, unit: 'MINUTES') {
         sh '''
@@ -141,7 +139,7 @@ pipeline {
       }
     }
 
-    stage('trivy container scan') {
+    stage('CONTAINER SCAN - trivy vulnerability search') {
         steps {
             script {
                 echo "Scanning Docker image with Trivy..."
@@ -184,8 +182,8 @@ pipeline {
             }
         }
     }
-*/
-    stage('dast owasp zap scan') {
+
+    stage('DAST - owasp zap scan') {
         steps {
             script {
                 sh """
@@ -217,76 +215,16 @@ pipeline {
         }
     }
 
+    stage('PUSH - push code to docker hub') {
+      steps {
+        withDockerRegistry([credentialsId: "docker-hub", url: ""]) {
+          sh 'printenv'
+          sh 'docker push wendgoudi/gestion-personnes:latest'
+        }
+      }
+    }
+
  /*
-    stage('dast owasp zap scan') {
-        steps {
-            sh """
-            docker run --network=host -v \$(pwd):/zap/wrk ghcr.io/zaproxy/zaproxy:stable zap-baseline.py \
-            -t http://192.168.220.1:9090 \
-            -r zap-report.html || true
-            """
-        }
-        post {
-            always {
-                publishHTML([
-                    allowMissing: true,
-                    alwaysLinkToLastBuild: true,
-                    keepAll: true,
-                    reportDir: '.',
-                    reportFiles: 'zap-report.html',
-                    reportName: 'OWASP ZAP DAST Report'
-                ])
-            }
-        }
-    }
-
-    stage('start application with docker compose') {
-        steps {
-            sh """
-            echo "Starting app using Docker Compose..."
-            docker compose down || true
-            docker compose up -d
-            sleep 10
-            """
-        }
-    }
-
-    stage('push code to docker hub') {
-      steps {
-        withDockerRegistry([credentialsId: "docker-hub", url: ""]) {
-          sh 'printenv'
-          sh 'docker push wendgoudi/gestion-personnes:latest'
-        }
-      }
-    }
-
-    stage('docker build and push') {
-      steps {
-        withDockerRegistry([credentialsId: "docker-hub", url: ""]) {
-          sh 'printenv'
-          sh 'docker build -t wendgoudi/gestion-personnes:latest .'
-          sh 'docker push wendgoudi/gestion-personnes:latest'
-        }
-      }
-    }
-
-    stage('Kubernetes Deployment') {
-        environment {
-            // Pointe vers le kubeconfig de Jenkins
-            KUBECONFIG = '/var/lib/jenkins/.kube/config'
-        }
-        steps {
-            script {
-                // Mise à jour de l'image dans le manifest
-                sh """
-                    sed -i 's#image: gestion-personnes:1.0#image: wendgoudi/gestion-personnes:latest#g' k8s_deployment_service.yaml
-                    kubectl apply -f k8s_deployment_service.yaml
-                    kubectl rollout status deployment/gestion-personnes-deployment
-                """
-            }
-        }
-    }
-
     stage('Kubernetes Deployment') {
         steps {
             withKubeConfig([credentialsId: 'kubeconfig']) {
