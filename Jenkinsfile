@@ -187,6 +187,37 @@ pipeline {
 
     stage('dast owasp zap scan') {
         steps {
+            script {
+                echo "Running OWASP ZAP baseline scan..."
+
+                sh """
+                mkdir -p zap-report
+
+                docker run --network=host \
+                    -v \$(pwd)/zap-report:/zap/wrk \
+                    --user \$(id -u):\$(id -g) \
+                    ghcr.io/zaproxy/zaproxy:stable zap-baseline.py \
+                    -t http://192.168.220.1:9090 \
+                    -r zap-report.html || true
+                """
+            }
+        }
+        post {
+            always {
+                publishHTML([
+                    allowMissing: true,
+                    alwaysLinkToLastBuild: true,
+                    keepAll: true,
+                    reportDir: 'zap-report',
+                    reportFiles: 'zap-report.html',
+                    reportName: 'OWASP ZAP DAST Report'
+                ])
+            }
+        }
+    }
+ /*
+    stage('dast owasp zap scan') {
+        steps {
             sh """
             docker run --network=host -v \$(pwd):/zap/wrk ghcr.io/zaproxy/zaproxy:stable zap-baseline.py \
             -t http://192.168.220.1:9090 \
@@ -206,7 +237,7 @@ pipeline {
             }
         }
     }
- /*
+
     stage('start application with docker compose') {
         steps {
             sh """
