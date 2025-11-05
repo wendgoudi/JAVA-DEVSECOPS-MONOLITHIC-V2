@@ -135,7 +135,7 @@ pipeline {
         timeout(time: 10, unit: 'MINUTES') {
         sh '''
             export DOCKER_BUILDKIT=0
-            docker build --no-cache -t gestion-personnes:latest .
+            docker build --no-cache -t wendgoudi/gestion-personnes:latest .
         '''
         }
       }
@@ -193,7 +193,7 @@ pipeline {
         }
       }
     }
-
+ /* 
     stage('start application with docker compose') {
         steps {
             sh """
@@ -204,7 +204,7 @@ pipeline {
             """
         }
     }
- /* 
+
     stage('dast owasp zap scan') {
         steps {
             sh """
